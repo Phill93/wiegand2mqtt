@@ -1,0 +1,6 @@
+mqtt:
+  broker: 172.28.128.5
+  port: 1883
+  user: keypad
+  password: Oethai0i
+loglevel: info
