@@ -4,56 +4,56 @@ package wiegand
 
 import (
   "fmt"
-  "github.com/Phill93/DoorManager/config"
   "github.com/Phill93/DoorManager/log"
   "github.com/warthog618/gpiod"
   "math"
   "math/bits"
   "time"
+  mqtt "github.com/eclipse/paho.mqtt.golang"
 )
 
 var c *gpiod.Chip
 
-func loadPlatformConf(k *keypad, c map[string]interface{}) {
+func loadPlatformConf(k *keypad, conf map[string]interface{}) {
   log.Info("Loaded Pi driver!")
   if conf["gpio"] == nil {
     log.Panic("No gpio config found")
   } else {
-    if conf["gpio"]["low"] == nil {
+    conf = conf["gpio"].(map[string]interface{})
+    if conf["low"] == nil {
       log.Panic("Gpio for communication missing (low)")
     } else {
-      log.Debug("Gpio for communication (low) set to %d", conf["gpio"]["low"].(int))
-      k.gpioLow = conf["gpio"]["low"].(int)
+      log.Debug("Gpio for communication (low) set to %d", conf["low"].(int))
+      k.gpioLow = conf["low"].(int)
     }
-    if conf["gpio"]["high"] == nil {
+    if conf["high"] == nil {
       log.Panic("Gpio for communication missing (high)")
     } else {
-      log.Debug("Gpio for communication (high) set to %d", conf["gpio"]["high"].(int))
-      k.gpioHigh = conf["gpio"]["high"].(int)
+      log.Debug("Gpio for communication (high) set to %d", conf["high"].(int))
+      k.gpioHigh = conf["high"].(int)
     }
-    if conf["gpio"]["led"] == nil {
+    if conf["led"] == nil {
       log.Warn("Gpio for led missing, disabling this feature")
     } else {
-      log.Debug("Gpio for led set to %d", conf["gpio"]["led"].(int))
-      k.gpioLed = conf["gpio"]["led"].(int)
+      log.Debug("Gpio for led set to %d", conf["led"].(int))
+      k.gpioLed = conf["led"].(int)
     }
-    if conf["gpio"]["beep"] == nil {
+    if conf["beep"] == nil {
       log.Warn("Gpio for beep missing, disabling this feature")
     } else {
-      log.Debug("Gpio for beep set to %d", conf["gpio"]["beep"].(int))
-      k.gpioLed = conf["gpio"]["beep"].(int)
+      log.Debug("Gpio for beep set to %d", conf["beep"].(int))
+      k.gpioLed = conf["beep"].(int)
     }
   }
 }
 
 func InitReader(pad *keypad) {
   log.Info("Reader initializing!")
-  cfg := config.Config()
   c, _ = gpiod.NewChip("gpiochip0", gpiod.WithConsumer("KeypadNode"))
   lowWd = make(chan bool, 1)
-  c.RequestLine(pad.gpioLow, gpiod.WithFallingEdge(lowHandler))
+  c.RequestLine(pad.gpioLow, gpiod.WithFallingEdge, gpiod.WithEventHandler(lowHandler))
   highWd = make(chan bool, 1)
-  c.RequestLine(pad.gpioHigh, gpiod.WithFallingEdge(highHandler))
+  c.RequestLine(pad.gpioHigh, gpiod.WithFallingEdge, gpiod.WithEventHandler(highHandler))
   defer CleanGpios()
   time.Sleep(time.Second)
   for {
