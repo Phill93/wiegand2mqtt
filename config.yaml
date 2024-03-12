@@ -9,3 +9,15 @@ arch:
   - armhf
   - armv7
   - i386
+options:
+  mqtt_ip: 127.0.0.1
+  mqtt_port: 1883
+  mqtt_user: wiegand2mqtt
+  mqtt_password: ""
+  loglevel: info
+schema:
+  mqtt_ip: str
+  mqtt_port: str
+  mqtt_user: str
+  mqtt_password: str
+  loglevel: str

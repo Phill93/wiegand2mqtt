@@ -1,9 +1,10 @@
 FROM golang:1.21
 WORKDIR /src
 COPY ./wiegand2mqtt /src
-RUN go build -o /bin/wiegand2mqtt -tags rpi ./src/main.go 
+RUN CGO_ENABLED=0 go build -o wiegand2mqtt -tags rpi ./src/main.go 
 
-FROM alpine:latest
-COPY --from=0 /bin/wiegand2mqtt /bin/wiegand2mqtt
-COPY ./wiegand2mqtt/config.yaml.example .
-CMD ["/bin/wiegand2mqtt"]
+ARG BUILD_FROM
+FROM $BUILD_FROM
+COPY --from=0 /src/wiegand2mqtt /bin/wiegand2mqtt
+COPY ./run.sh /run.sh
+CMD ["/run.sh"]
