@@ -10,6 +10,9 @@ mqtt:
   user: $(bashio::config 'mqtt_user')
   password: $(bashio::config 'mqtt_password')
 loglevel: $(bashio::config 'loglevel')
+gpio:
+  low: $(bashio::config 'gpio_low')
+  high: $(bashio::config 'gpio_high')
 EOF
 
 /bin/wiegand2mqtt
