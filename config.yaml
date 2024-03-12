@@ -1,8 +1,9 @@
 name: "Wiegand2MQTT"
 description: "Connect a Wiegand Keypad to MQTT"
-version: "0.1.2"
+version: "0.1.3"
 slug: "wiegand2mqtt"
 init: false
+gpio: true
 arch:
   - aarch64
   - amd64
