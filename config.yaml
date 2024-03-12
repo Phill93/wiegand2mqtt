@@ -1,6 +1,6 @@
 name: "Wiegand2MQTT"
 description: "Connect a Wiegand Keypad to MQTT"
-version: "0.1.1"
+version: "0.1.2"
 slug: "wiegand2mqtt"
 init: false
 arch:
